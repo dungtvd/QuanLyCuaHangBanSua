@@ -36,3 +36,16 @@ Website được phát triển bằng ngôn ngữ lập trình Python sử dụn
 - Tăng trải nghiệm người dùng
 - Thực hành Django Framework
 - Áp dụng kiến thức lập trình web thực tế
+## Giao diện hệ thống
+
+### Trang chủ
+![Trang chủ](images/home.png)
+
+### Giỏ hàng
+![Giỏ hàng](images/cart.png)
+
+### Thanh toán
+![Thanh toán](images/order_success.png)
+
+### Quản lý đơn hàng
+![Nhân viên](images/staff_dashboard.png)
