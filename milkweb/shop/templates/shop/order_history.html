@@ -1,0 +1,120 @@
+{% extends "shop/base.html" %}
+{% load currency %}
+{% block content %}
+
+<style>
+
+/* BOX */
+.order-box {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* TABLE */
+.table th {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* STATUS */
+.badge {
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
+/* ROW HOVER */
+.table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* EMPTY */
+.empty-box {
+    text-align: center;
+    padding: 60px;
+}
+
+</style>
+
+<!-- TITLE -->
+
+<h3 class="mb-4 fw-bold">📦 Lịch sử đơn hàng</h3>
+
+<div class="order-box">
+
+<table class="table mb-0 align-middle">
+
+
+<thead class="table-light">
+    <tr>
+        <th>#ID</th>
+        <th>Ngày đặt</th>
+        <th>Tổng tiền</th>
+        <th>Trạng thái</th>
+        <th class="text-end">Chi tiết</th>
+    </tr>
+</thead>
+
+<tbody>
+{% for o in orders %}
+<tr>
+
+    <td class="fw-bold">#{{ o.id }}</td>
+
+    <td class="text-muted">
+        {{ o.created_at|date:"d/m/Y H:i" }}
+    </td>
+
+    <td class="text-danger fw-bold">
+        {{ o.total_price|vnd }}
+    </td>
+
+    <td>
+        {% if o.status == "Pending" %}
+            <span class="badge bg-warning text-dark">⏳ Chờ xử lý</span>
+        {% elif o.status == "Approved" %}
+            <span class="badge bg-success">✔ Hoàn thành</span>
+        {% elif o.status == "Rejected" %}
+            <span class="badge bg-danger">✖ Đã hủy</span>
+        {% endif %}
+    </td>
+
+    <td class="text-end">
+        <a href="/order/{{ o.id }}/" class="btn btn-sm btn-outline-primary">
+            Xem
+        </a>
+    </td>
+
+</tr>
+{% empty %}
+
+<tr>
+    <td colspan="5">
+        <div class="empty-box">
+
+            <div style="font-size:60px;">📦</div>
+
+            <h5 class="text-muted mt-3">Bạn chưa có đơn hàng nào</h5>
+
+            <a href="/" class="btn btn-success mt-3">
+                🛒 Mua ngay
+            </a>
+
+        </div>
+    </td>
+</tr>
+
+{% endfor %}
+</tbody>
+
+
+</table>
+
+</div>
+
+{% endblock %}

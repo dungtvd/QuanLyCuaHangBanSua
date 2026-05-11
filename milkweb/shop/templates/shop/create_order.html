@@ -1,0 +1,118 @@
+{% extends 'shop/staff_base.html' %}
+{% load currency %}
+
+{% block content %}
+
+<h3 class="mb-4 fw-bold">🛒 Tạo đơn hàng (POS)</h3>
+
+<div class="card p-4">
+
+<form method="post">
+{% csrf_token %}
+
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+
+<thead class="table-dark">
+<tr>
+<th>Sản phẩm</th>
+<th>Giá</th>
+<th>Tồn kho</th>
+<th>Số lượng</th>
+<th>Thành tiền</th>
+</tr>
+</thead>
+
+<tbody>
+{% for p in products %}
+<tr>
+
+<td class="fw-semibold">{{ p.name }}</td>
+
+<td class="price text-danger fw-bold"
+    data-price="{{ p.price }}">
+    {{ p.price|vnd }}
+</td>
+
+<td>
+    {% if p.stock == 0 %}
+        <span class="badge bg-danger">Hết hàng</span>
+    {% elif p.stock < 10 %}
+        <span class="badge bg-warning text-dark">Còn {{ p.stock }}</span>
+    {% else %}
+        <span class="badge bg-success">{{ p.stock }}</span>
+    {% endif %}
+</td>
+
+<td style="width:100px;">
+    <input type="number"
+           name="qty_{{p.id}}"
+           value="0"
+           min="0"
+           max="{{ p.stock }}"
+           class="form-control text-center"
+           onchange="updateTotal()">
+</td>
+
+<td class="subtotal fw-bold text-success">
+    0 ₫
+</td>
+
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+</div>
+
+<!-- TOTAL -->
+
+<div class="d-flex justify-content-between align-items-center mt-4">
+
+<h4 class="mb-0">Tổng tiền:</h4>
+
+<h3 class="text-danger fw-bold mb-0">
+    <span id="total">0 ₫</span>
+</h3>
+
+
+</div>
+
+<button type="submit" class="btn btn-success w-100 mt-4 py-2 fw-bold">
+    🧾 Tạo đơn hàng
+</button>
+
+</form>
+
+</div>
+
+<script>
+function formatVND(num) {
+    return num.toLocaleString('vi-VN') + " ₫";
+}
+
+function updateTotal() {
+    let rows = document.querySelectorAll("tbody tr");
+    let total = 0;
+
+    rows.forEach(row => {
+        let priceCell = row.querySelector(".price");
+        let input = row.querySelector("input");
+        let subtotalCell = row.querySelector(".subtotal");
+
+        if (!priceCell || !input) return;
+
+        let price = parseFloat(priceCell.dataset.price);
+        let qty = parseInt(input.value) || 0;
+
+        let subtotal = price * qty;
+
+        subtotalCell.innerText = formatVND(subtotal);
+        total += subtotal;
+    });
+
+    document.getElementById("total").innerText = formatVND(total);
+}
+</script>
+
+{% endblock %}

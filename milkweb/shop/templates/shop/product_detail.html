@@ -1,0 +1,312 @@
+{% extends 'shop/base.html' %}
+{% load currency %}
+{% block content %}
+
+<style>
+
+/* IMAGE */
+.product-img {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+.product-img img {
+    max-height: 400px;
+    object-fit: contain;
+}
+
+/* INFO */
+.product-box {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+/* PRICE */
+.price {
+    color: #dc2626;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* BUTTON */
+.btn-buy {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.btn-buy:hover {
+    opacity: 0.9;
+}
+
+/* RELATED */
+.related-card {
+    border-radius: 14px;
+    overflow: hidden;
+    transition: 0.25s;
+}
+
+.related-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* REVIEW */
+.review-box {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+</style>
+
+<div class="row mb-5">
+
+    <!-- IMAGE -->
+    <div class="col-md-5 mb-4">
+
+        <div class="product-img">
+
+            <img src="{{ product.image.url|default:'https://via.placeholder.com/400' }}"
+                 class="img-fluid">
+
+        </div>
+
+    </div>
+
+    <!-- INFO -->
+    <div class="col-md-7">
+
+        <div class="product-box">
+
+            <h3 class="fw-bold mb-3">
+                {{ product.name }}
+            </h3>
+
+            <!-- RATING -->
+            <div class="mb-2">
+
+                {% if avg_rating %}
+
+                    <span class="text-warning fs-5">
+
+                        {% for i in "12345" %}
+
+                            {% if forloop.counter <= avg_rating|floatformat:0 %}
+                                ★
+                            {% else %}
+                                ☆
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </span>
+
+                    <span class="fw-semibold">
+                        {{ avg_rating|floatformat:1 }}/5
+                    </span>
+
+                {% else %}
+
+                    <span class="text-muted">
+                        Chưa có đánh giá
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+            <!-- PRICE -->
+            <div class="price mb-3">
+                {{ product.price|vnd }}
+            </div>
+
+            <!-- DESC -->
+            <div class="mb-4 text-muted">
+                {{ product.description }}
+            </div>
+
+            <!-- ADD CART -->
+            <form action="/add/{{ product.id }}/"
+                  method="post"
+                  class="d-flex gap-2">
+
+                {% csrf_token %}
+
+                <input type="number"
+                       name="quantity"
+                       value="1"
+                       min="1"
+                       class="form-control"
+                       style="width:80px;">
+
+                <button class="btn-buy">
+                    🛒 Thêm vào giỏ
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===== RELATED ===== -->
+
+{% if related %}
+
+<hr class="my-5">
+
+<h4 class="mb-3 fw-bold">
+    Sản phẩm liên quan
+</h4>
+
+<div class="row g-3">
+
+    {% for p in related %}
+
+    <div class="col-md-3">
+
+        <div class="card related-card">
+
+            <img src="{{ p.image.url|default:'https://via.placeholder.com/200' }}"
+                 style="height:170px;object-fit:cover;">
+
+            <div class="p-3">
+
+                <div class="fw-semibold mb-1">
+                    {{ p.name }}
+                </div>
+
+                <div class="text-danger fw-bold">
+                    {{ p.price|vnd }}
+                </div>
+
+                <a href="/product/{{ p.id }}/"
+                   class="btn btn-sm btn-outline-primary w-100 mt-2">
+                    Xem
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endif %}
+
+
+<!-- ===== REVIEW ===== -->
+
+<hr class="my-5">
+
+<h4 class="mb-4 fw-bold">
+    Đánh giá sản phẩm
+</h4>
+
+
+<!-- FORM -->
+<div class="review-box mb-4">
+
+    {% if user.is_authenticated %}
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <div class="mb-3">
+
+            <label class="fw-semibold">
+                Đánh giá
+            </label>
+
+            <select name="rating" class="form-select">
+
+                <option value="5">⭐⭐⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐</option>
+                <option value="3">⭐⭐⭐</option>
+                <option value="2">⭐⭐</option>
+                <option value="1">⭐</option>
+
+            </select>
+
+        </div>
+
+        <textarea name="comment"
+                  class="form-control mb-3"
+                  placeholder="Nhận xét của bạn..."
+                  rows="3"></textarea>
+
+        <button class="btn btn-primary">
+            Gửi đánh giá
+        </button>
+
+    </form>
+
+    {% else %}
+
+    <div class="alert alert-light border">
+
+        Bạn có thể mua hàng ngay mà không cần tài khoản.
+        <br>
+        Đăng nhập nếu muốn đánh giá sản phẩm.
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- LIST REVIEW -->
+<div class="review-box">
+
+    {% for r in reviews %}
+
+    <div class="border-bottom pb-3 mb-3">
+
+        <div class="d-flex justify-content-between">
+
+            <b>{{ r.user.username }}</b>
+
+            <small class="text-muted">
+                {{ r.created_at|date:"d/m/Y" }}
+            </small>
+
+        </div>
+
+        <div class="text-warning mb-1">
+            {{ r.rating }} ⭐
+        </div>
+
+        <p class="mb-0">
+            {{ r.comment }}
+        </p>
+
+    </div>
+
+    {% empty %}
+
+    <p class="text-muted">
+        Chưa có đánh giá
+    </p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends 'shop/base.html' %}
+{% load currency %}
+{% block content %}
+
+<style>
+
+/* HEADER BOX */
+.search-header {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 22px;
+    margin-top: 20px;
+}
+
+/* CARD (ĐỒNG BỘ HOME) */
+.product-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: 0.25s;
+    border: 1px solid #eee;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.product-card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+}
+
+/* BODY */
+.product-body {
+    padding: 12px;
+}
+
+/* TITLE */
+.product-title {
+    font-size: 14px;
+    height: 38px;
+    overflow: hidden;
+    font-weight: 500;
+}
+
+/* PRICE */
+.price {
+    color: #dc2626;
+    font-weight: bold;
+    margin: 6px 0;
+}
+
+/* BUTTON */
+.btn-view {
+    display: block;
+    text-align: center;
+    background: #22c55e;
+    color: white;
+    padding: 7px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-view:hover {
+    opacity: 0.9;
+}
+
+/* EMPTY */
+.empty-box {
+    background: white;
+    border-radius: 16px;
+    padding: 50px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+</style>
+
+<!-- HEADER -->
+
+<div class="search-header mb-4">
+
+<h4 class="fw-bold mb-1">
+    🔍 Kết quả tìm kiếm
+    {% if keyword %}
+    <span class="text-success">"{{ keyword }}"</span>
+    {% endif %}
+</h4>
+
+{% if keyword %}
+    <small class="text-muted">
+        Tìm thấy {{ results.count }} sản phẩm
+    </small>
+{% else %}
+    <small class="text-muted">
+        Nhập từ khóa để tìm kiếm
+    </small>
+{% endif %}
+
+
+</div>
+
+<!-- RESULT -->
+
+{% if results %}
+
+<div class="grid">
+
+{% for p in results %}
+
+<div class="product-card">
+
+<a href="/product/{{p.id}}/">
+    <img src="{{ p.image.url|default:'https://via.placeholder.com/200' }}">
+</a>
+
+<div class="product-body">
+
+    <div class="product-title">{{ p.name }}</div>
+
+    <div class="price">{{ p.price|vnd }}</div>
+
+    <a href="/product/{{p.id}}/" class="btn-view">
+        👁 Xem chi tiết
+    </a>
+
+</div>
+
+
+</div>
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="empty-box">
+
+
+<div style="font-size:60px;">🔍</div>
+
+<h5 class="mt-3 text-muted">Không tìm thấy sản phẩm</h5>
+
+<p class="text-muted">
+    {% if keyword %}
+        Không có kết quả cho "<b>{{ keyword }}</b>"
+    {% else %}
+        Hãy nhập từ khóa để tìm kiếm
+    {% endif %}
+</p>
+
+<a href="/" class="btn btn-success">
+    ← Quay về trang chủ
+</a>
+
+
+</div>
+
+{% endif %}
+
+{% endblock %}

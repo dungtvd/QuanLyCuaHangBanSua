@@ -1,0 +1,164 @@
+{% extends "shop/base.html" %}
+{% load currency %}
+{% block content %}
+
+<style>
+
+/* CARD */
+.box {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* TABLE */
+.table th {
+    font-size: 14px;
+    font-weight: 600;
+}
+.table td {
+    vertical-align: middle;
+}
+
+/* IMAGE */
+.p-img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    background: #fafafa;
+}
+
+/* ROW HOVER */
+.table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* TOTAL */
+.total {
+    font-size: 22px;
+    font-weight: bold;
+    color: #dc2626;
+}
+
+/* BADGE */
+.badge {
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
+</style>
+
+<!-- TITLE -->
+
+<h3 class="mb-4 fw-bold">🧾 Đơn hàng #{{ order.id }}</h3>
+
+<div class="row g-4">
+
+<!-- LEFT -->
+<div class="col-lg-8">
+
+    <div class="box p-4">
+
+        <h5 class="fw-bold mb-3">📦 Danh sách sản phẩm</h5>
+
+        <div class="table-responsive">
+        <table class="table align-middle">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th class="text-center">Giá</th>
+                    <th class="text-center">SL</th>
+                    <th class="text-end">Thành tiền</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for item in order.items.all %}
+            <tr>
+
+                <!-- PRODUCT -->
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="{{ item.product.image.url|default:'https://via.placeholder.com/50' }}"
+                             class="p-img">
+                        <span>{{ item.product.name }}</span>
+                    </div>
+                </td>
+
+                <!-- PRICE -->
+                <td class="text-center">
+                    {{ item.price|vnd }}
+                </td>
+
+                <!-- QTY -->
+                <td class="text-center">
+                    {{ item.quantity }}
+                </td>
+
+                <!-- SUBTOTAL -->
+                <td class="text-end text-danger fw-bold">
+                    {{ item.price|mul:item.quantity|vnd }}
+                </td>
+
+            </tr>
+            {% endfor %}
+            </tbody>
+
+        </table>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- RIGHT -->
+<div class="col-lg-4">
+
+    <div class="box p-4">
+
+        <h5 class="fw-bold mb-3">📊 Trạng thái đơn</h5>
+
+        {% if order.status == "Pending" %}
+            <span class="badge bg-warning text-dark">⏳ Chờ xử lý</span>
+        {% elif order.status == "Approved" %}
+            <span class="badge bg-success">✔ Hoàn thành</span>
+        {% elif order.status == "Rejected" %}
+            <span class="badge bg-danger">✖ Đã hủy</span>
+        {% endif %}
+
+        <hr>
+
+        <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Mã đơn</span>
+            <strong>#{{ order.id }}</strong>
+        </div>
+
+        <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Ngày đặt</span>
+            <span>{{ order.created_at|date:"d/m/Y H:i" }}</span>
+        </div>
+
+        <hr>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="fw-semibold">Tổng tiền</span>
+            <div class="total">
+                {{ order.total_price|vnd }}
+            </div>
+        </div>
+
+        <a href="/orders/" class="btn btn-outline-primary w-100 mt-4">
+            ← Quay lại danh sách
+        </a>
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% endblock %}

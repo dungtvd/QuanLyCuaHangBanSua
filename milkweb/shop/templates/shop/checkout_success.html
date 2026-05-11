@@ -1,0 +1,94 @@
+{% extends 'shop/base.html' %}
+{% load currency %}
+{% block content %}
+
+<style>
+
+/* BOX */
+.success-box {
+    max-width: 500px;
+    margin: auto;
+}
+
+/* CARD */
+.success-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+/* ICON */
+.success-icon {
+    font-size: 70px;
+    color: #22c55e;
+}
+
+/* TOTAL */
+.total {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+/* BUTTON */
+.btn-main {
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+</style>
+
+<div class="text-center py-5 success-box">
+
+<!-- ICON -->
+<div class="success-icon mb-3">✔</div>
+
+<!-- TITLE -->
+<h3 class="fw-bold mb-2">Tạo đơn thành công</h3>
+
+<p class="text-muted mb-4">
+    Đơn hàng đã được lưu vào hệ thống
+</p>
+
+<!-- CARD -->
+<div class="success-card text-start mb-4">
+
+    <div class="d-flex justify-content-between mb-2">
+        <span>Mã đơn</span>
+        <strong>#{{ order.id }}</strong>
+    </div>
+
+    <div class="d-flex justify-content-between mb-2">
+        <span>Thời gian</span>
+        <span>{{ order.created_at|date:"H:i d/m/Y" }}</span>
+    </div>
+
+    <hr>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">Tổng tiền</span>
+        <span class="text-danger total">
+            {{ order.total_price|vnd }}
+        </span>
+    </div>
+
+</div>
+
+<!-- ACTION -->
+<div class="d-flex gap-3 justify-content-center flex-wrap">
+
+    <a href="/staff/create/" class="btn btn-success btn-main">
+        ➕ Tạo đơn mới
+    </a>
+
+    <a href="/staff/" class="btn btn-outline-primary btn-main">
+        📋 Danh sách đơn
+    </a>
+
+</div>
+
+
+</div>
+
+{% endblock %}

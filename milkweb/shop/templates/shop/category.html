@@ -1,0 +1,161 @@
+{% extends 'shop/base.html' %}
+{% load currency %}
+{% block content %}
+
+<style>
+
+/* HEADER */
+.category-header {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* GRID (ĐỒNG BỘ HOME) */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 22px;
+    margin-top: 20px;
+}
+
+/* CARD */
+.product-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #eee;
+    transition: 0.25s;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.product-card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+}
+
+/* BODY */
+.product-body {
+    padding: 12px;
+}
+
+/* TITLE */
+.product-title {
+    font-size: 14px;
+    height: 38px;
+    overflow: hidden;
+}
+
+/* PRICE */
+.price {
+    color: #dc2626;
+    font-weight: bold;
+    margin: 6px 0;
+}
+
+/* BUTTON */
+.btn-view {
+    display: block;
+    text-align: center;
+    background: #22c55e;
+    color: white;
+    padding: 7px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-view:hover {
+    opacity: 0.9;
+}
+
+/* EMPTY */
+.empty-box {
+    background: white;
+    border-radius: 16px;
+    padding: 50px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+</style>
+
+<!-- HEADER -->
+
+<div class="category-header mb-4">
+
+<h4 class="fw-bold mb-1">
+    🏷 {{ category.name }}
+</h4>
+
+<small class="text-muted">
+    Có {{ products.count }} sản phẩm
+</small>
+
+</div>
+
+<!-- PRODUCTS -->
+
+{% if products %}
+
+<div class="grid">
+
+{% for p in products %}
+
+<div class="product-card">
+
+<a href="/product/{{p.id}}/">
+    <img src="{{ p.image.url|default:'https://via.placeholder.com/200' }}">
+</a>
+
+<div class="product-body">
+
+    <div class="product-title">
+        {{ p.name }}
+    </div>
+
+    <div class="price">
+        {{ p.price|vnd }}
+    </div>
+
+    <a href="/product/{{p.id}}/" class="btn-view">
+        👁 Xem chi tiết
+    </a>
+
+</div>
+
+
+</div>
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="empty-box">
+
+<div style="font-size:60px;">📦</div>
+
+<h5 class="mt-3 text-muted">Chưa có sản phẩm</h5>
+
+<p class="text-muted">
+    Danh mục này chưa có sản phẩm nào
+</p>
+
+<a href="/" class="btn btn-success">
+    ← Quay về trang chủ
+</a>
+
+
+</div>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'shop/base.html' %}
+{% load currency %}
+{% block content %}
+
+<style>
+.cart-item {
+    transition: 0.2s;
+}
+.cart-item:hover {
+    transform: translateY(-3px);
+}
+
+.product-img {
+    max-height: 100px;
+    object-fit: contain;
+}
+
+.qty-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.qty-box span {
+    min-width: 30px;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 60px;
+    color: #ccc;
+}
+</style>
+
+<h2 class="mb-4">🛒 Giỏ hàng của bạn</h2>
+
+{% if items %}
+
+<div class="row g-3">
+
+{% for item in items %}
+<div class="col-12">
+    <div class="bg-white rounded-4 shadow-sm p-3 cart-item">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-2 text-center">
+                <img src="{{ item.product.image.url|default:'https://via.placeholder.com/100' }}"
+                     class="img-fluid product-img">
+            </div>
+
+            <div class="col-md-3">
+                <h6 class="fw-semibold mb-1">{{ item.product.name }}</h6>
+                <div class="text-danger fw-bold">
+                    {{ item.product.price|vnd }}
+                </div>
+            </div>
+
+            <div class="col-md-3 text-center">
+                <div class="qty-box justify-content-center">
+
+                    <a href="/cart/update/{{ item.product.id }}/decrease/"
+                       class="btn btn-outline-secondary btn-sm">−</a>
+
+                    <span class="fw-bold">
+                        {{ item.quantity }}
+                    </span>
+
+                    <a href="/cart/update/{{ item.product.id }}/increase/"
+                       class="btn btn-outline-secondary btn-sm">+</a>
+
+                </div>
+            </div>
+
+            <div class="col-md-2 text-end">
+                <div class="fw-bold text-success">
+                    {{ item.subtotal|vnd }}
+                </div>
+            </div>
+
+            <div class="col-md-2 text-end">
+                <a href="/cart/delete/{{ item.product.id }}/"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Xóa sản phẩm này?')">
+                   🗑
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endfor %}
+
+</div>
+
+<div class="bg-white rounded-4 shadow-sm p-4 mt-4">
+
+<div class="d-flex justify-content-between mb-2">
+    <span>Tổng sản phẩm:</span>
+    <strong>{{ items|length }}</strong>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Tổng cộng:</h4>
+    <h2 class="text-danger fw-bold mb-0">
+        {{ total|vnd }}
+    </h2>
+</div>
+
+<a href="/checkout/" class="btn btn-warning w-100 py-3 fw-bold">
+    💳 Thanh toán ngay
+</a>
+
+</div>
+
+{% else %}
+
+<div class="text-center py-5 bg-white rounded-4 shadow-sm">
+
+<div class="empty-icon">🛒</div>
+
+<h4 class="text-muted mt-3">Giỏ hàng trống</h4>
+
+<a href="/" class="btn btn-primary mt-3">
+    ← Tiếp tục mua sắm
+</a>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
