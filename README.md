@@ -39,10 +39,10 @@ Website được phát triển bằng ngôn ngữ lập trình Python sử dụn
 ## Giao diện hệ thống
 
 ### Trang chủ
-![Trang chủ](images/home.png)
+![Trang chủ](images/Home.png)
 
 ### Giỏ hàng
-![Giỏ hàng](images/cart.png)
+![Giỏ hàng](images/Cart.png)
 
 ### Thanh toán
 ![Thanh toán](images/order_success.png)
